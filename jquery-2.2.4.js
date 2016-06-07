@@ -95,14 +95,18 @@ var
 jQuery.fn = jQuery.prototype = {
 
 	// The current version of jQuery being used
+	//版本
 	jquery: version,
 
+	//构造器
 	constructor: jQuery,
 
 	// Start with an empty selector
+	//选择器
 	selector: "",
 
 	// The default length of a jQuery object is 0
+	//选择到的元素的个数
 	length: 0,
 
 	toArray: function() {
@@ -143,34 +147,42 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	// Execute a callback for every element in the matched set.
+	// 调用jquery each函数
 	each: function( callback ) {
 		return jQuery.each( this, callback );
 	},
 
+	// 通过jquery map函数 把结果数组放到栈的顶端
 	map: function( callback ) {
 		return this.pushStack( jQuery.map( this, function( elem, i ) {
 			return callback.call( elem, i, elem );
 		} ) );
 	},
 
+	//通过原生slice 函数把选择到的元素放入栈的顶端
 	slice: function() {
 		return this.pushStack( slice.apply( this, arguments ) );
 	},
 
+	//使用eq函数
 	first: function() {
 		return this.eq( 0 );
 	},
 
+	//使用eq函数
 	last: function() {
 		return this.eq( -1 );
 	},
 
+	//按传入参数把选取的元素放入栈顶
 	eq: function( i ) {
 		var len = this.length,
+		//+i 这个目的是把i转换为number类型  后面的三元是为了当i为负数时 从后选取
 			j = +i + ( i < 0 ? len : 0 );
 		return this.pushStack( j >= 0 && j < len ? [ this[ j ] ] : [] );
 	},
 
+	//释放当前栈顶
 	end: function() {
 		return this.prevObject || this.constructor();
 	},
@@ -181,8 +193,16 @@ jQuery.fn = jQuery.prototype = {
 	sort: arr.sort,
 	splice: arr.splice
 };
+	//==========================================end==2016.6.7====================================================
 
 jQuery.extend = jQuery.fn.extend = function() {
+	//target         拓展的目标
+	//deep           是否是深拷贝
+	// i             表示参数拷贝需要的参数在arguments中开始的下标 类似一个游标
+	//options        在copy 时使用。用来代表循环用户想要copy的对象时，当前遍历到的对象。
+	//name           当前循环到的copy对象的当前遍历到的属性
+	//src            当前拓展目标的name属性的值
+	//copy           当前遍历到的copy对象属性的值
 	var options, name, src, copy, copyIsArray, clone,
 		target = arguments[ 0 ] || {},
 		i = 1,
@@ -190,28 +210,35 @@ jQuery.extend = jQuery.fn.extend = function() {
 		deep = false;
 
 	// Handle a deep copy situation
+	//如果第一个参数 是一个boolean 类型就把值赋给deep
 	if ( typeof target === "boolean" ) {
 		deep = target;
 
 		// Skip the boolean and the target
+		// 如果第一个参数是一个boolean 那么copy 目标就是 第二个参数 也就是arguments[1]
 		target = arguments[ i ] || {};
+		//移动游标
 		i++;
 	}
 
 	// Handle case when target is a string or something (possible in deep copy)
+	//target 不是boolean 不是object 不是function  可能是字符串之类的 的时候
 	if ( typeof target !== "object" && !jQuery.isFunction( target ) ) {
 		target = {};
 	}
 
 	// Extend jQuery itself if only one argument is passed
+	//只有一个对象传入的时候 就对jquery自身拓展
 	if ( i === length ) {
 		target = this;
+		//移动游标
 		i--;
 	}
 
 	for ( ; i < length; i++ ) {
 
 		// Only deal with non-null/undefined values
+		//传入copy的对象不是空
 		if ( ( options = arguments[ i ] ) != null ) {
 
 			// Extend the base object
@@ -220,6 +247,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 				copy = options[ name ];
 
 				// Prevent never-ending loop
+				// 如果当前拓展的目标 是 copy对象的一个属性就退出本次循环防止内存溢出
 				if ( target === copy ) {
 					continue;
 				}
@@ -456,7 +484,6 @@ jQuery.extend( {
 			ret = [];
 
 		// Go through the array, translating each of the items to their new values
-
 		//判断下是否是一个类数组对象
 		if ( isArrayLike( elems ) ) {
 			length = elems.length;
