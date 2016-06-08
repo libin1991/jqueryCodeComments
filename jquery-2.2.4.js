@@ -54,6 +54,13 @@ var push = arr.push;
 
 var indexOf = arr.indexOf;
 
+	//其实class2type装载着对象的类型
+	// Populate the class2type map
+	// jQuery.each( "Boolean Number String Function Array Date RegExp Object Error Symbol".split( " " ),
+	// 	function( i, name ) {
+	// 		class2type[ "[object " + name + "]" ] = name.toLowerCase();
+	// 	}
+	// );
 var class2type = {};
 
 var toString = class2type.toString;
@@ -80,6 +87,7 @@ var
 
 	// Support: Android<4.1
 	// Make sure we trim BOM and NBSP
+	//\uFEFF  名为 BOM  空白字符   \xA0  就是 &nbsp;
 	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
 
 	// Matches dashed string for camelizing
@@ -193,8 +201,8 @@ jQuery.fn = jQuery.prototype = {
 	sort: arr.sort,
 	splice: arr.splice
 };
-	//==========================================end==2016.6.7====================================================
 
+	//jquery 向自身拓展属性方法 深拷贝 浅拷贝
 jQuery.extend = jQuery.fn.extend = function() {
 	//target         拓展的目标
 	//deep           是否是深拷贝
@@ -203,6 +211,9 @@ jQuery.extend = jQuery.fn.extend = function() {
 	//name           当前循环到的copy对象的当前遍历到的属性
 	//src            当前拓展目标的name属性的值
 	//copy           当前遍历到的copy对象属性的值
+	//copyIsArray    判断拷贝对象的属性是不是一个数组
+	//clone          拓展目标克隆属性的值 也就是 在深拷贝时 需要根据复制的属性类型新建的一个数组 或者 对象 如果拓展目标
+	//               上有这个属性则使用目标身上的属性值 如果没有就新建空的数组或者对象
 	var options, name, src, copy, copyIsArray, clone,
 		target = arguments[ 0 ] || {},
 		i = 1,
@@ -247,12 +258,13 @@ jQuery.extend = jQuery.fn.extend = function() {
 				copy = options[ name ];
 
 				// Prevent never-ending loop
-				// 如果当前拓展的目标 是 copy对象的一个属性就退出本次循环防止内存溢出
+				//防止拷贝时循环引用 但是如果是深拷贝其实并不会出现循环引用
 				if ( target === copy ) {
 					continue;
 				}
 
 				// Recurse if we're merging plain objects or arrays
+				//如果是深拷贝
 				if ( deep && copy && ( jQuery.isPlainObject( copy ) ||
 					( copyIsArray = jQuery.isArray( copy ) ) ) ) {
 
@@ -268,6 +280,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 					target[ name ] = jQuery.extend( deep, clone, copy );
 
 				// Don't bring in undefined values
+				//如果是浅拷贝
 				} else if ( copy !== undefined ) {
 					target[ name ] = copy;
 				}
@@ -312,7 +325,8 @@ jQuery.extend( {
 		var realStringObj = obj && obj.toString();
 		return !jQuery.isArray( obj ) && ( realStringObj - parseFloat( realStringObj ) + 1 ) >= 0;
 	},
-
+	
+	//判断是否是由Object 构建出来的
 	isPlainObject: function( obj ) {
 		var key;
 
@@ -358,6 +372,8 @@ jQuery.extend( {
 	},
 
 	// Evaluates a script in a global context
+	//执行一段script 脚本 因为 ES5 严格模式对eval的影响 eval代码中的变量初始化..其外部不再可访问,也就是说eval有了一个独立的变量环境
+	//所以jquery  用创建script 脚本来解决
 	globalEval: function( code ) {
 		var script,
 			indirect = eval;
@@ -386,17 +402,21 @@ jQuery.extend( {
 	// Convert dashed to camelCase; used by the css and data modules
 	// Support: IE9-11+
 	// Microsoft forgot to hump their vendor prefix (#9572)
+	// 转换IE标识 例如 -ms-position 为 msPosition
 	camelCase: function( string ) {
 		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
 	},
 
+	//判断dom名称
 	nodeName: function( elem, name ) {
 		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
 	},
 
+	//遍历obj
 	each: function( obj, callback ) {
 		var length, i = 0;
 
+		//判断obj是不是一个类数组
 		if ( isArrayLike( obj ) ) {
 			length = obj.length;
 			for ( ; i < length; i++ ) {
@@ -416,6 +436,7 @@ jQuery.extend( {
 	},
 
 	// Support: Android<4.1
+	//去掉  前后空格 nbsp
 	trim: function( text ) {
 		return text == null ?
 			"" :
