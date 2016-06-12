@@ -352,6 +352,7 @@ jQuery.extend( {
 		return key === undefined || hasOwn.call( obj, key );
 	},
 
+	//判断是否是空对象
 	isEmptyObject: function( obj ) {
 		var name;
 		for ( name in obj ) {
@@ -360,6 +361,7 @@ jQuery.extend( {
 		return true;
 	},
 
+	//获取对象类型
 	type: function( obj ) {
 		if ( obj == null ) {
 			return obj + "";
@@ -444,6 +446,7 @@ jQuery.extend( {
 	},
 
 	// results is for internal usage only
+	//把arr拼装到results 中 ，result 是{} 那么拼装出来的格式是 {0:arr,length:1} 如果是数组 那就是[arr]
 	makeArray: function( arr, results ) {
 		var ret = results || [];
 
@@ -460,11 +463,13 @@ jQuery.extend( {
 
 		return ret;
 	},
-
+	//arr     被查询的对象
+	//elem    目标对象
+	//i       检索起始下标
 	inArray: function( elem, arr, i ) {
 		return arr == null ? -1 : indexOf.call( arr, elem, i );
 	},
-
+	//合并数组 或者类数组
 	merge: function( first, second ) {
 		var len = +second.length,
 			j = 0,
@@ -479,6 +484,11 @@ jQuery.extend( {
 		return first;
 	},
 
+	//按条件过滤数组
+	//elems       需要被过滤的数组
+	//callback    过滤使用的函数
+	//invert      用来设置 是以过滤函数为真还是为假时过滤数组，如果不填那么就是undefined 是false  也就是按照过滤函数为真时过滤
+	//            如果传入true 那么就是过滤函数返回值为假时过滤
 	grep: function( elems, callback, invert ) {
 		var callbackInverse,
 			matches = [],
@@ -489,6 +499,7 @@ jQuery.extend( {
 		// Go through the array, only saving the items
 		// that pass the validator function
 		for ( ; i < length; i++ ) {
+			//!callback( elems[ i ], i ) 为了不传invert时callbackExpect有个默认值，而且这样转换之后就是用boolean进行判断
 			callbackInverse = !callback( elems[ i ], i );
 			if ( callbackInverse !== callbackExpect ) {
 				matches.push( elems[ i ] );
@@ -581,11 +592,12 @@ if ( typeof Symbol === "function" ) {
 /* jshint ignore: end */
 
 // Populate the class2type map
+// 构建 [object Number]	这种格式的字符串 用于表示类型
 jQuery.each( "Boolean Number String Function Array Date RegExp Object Error Symbol".split( " " ),
 function( i, name ) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 } );
-
+	// 用于判断是否是数组或者类数组对象
 function isArrayLike( obj ) {
 
 	// Support: iOS 8.2 (not reproducible in simulator)
