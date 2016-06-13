@@ -547,7 +547,13 @@ jQuery.extend( {
 
 	// Bind a function to a context, optionally partially applying any
 	// arguments.
+	//fn    需要改变上下文环境的funtion
+	//context  s上下文对象
+	// 当context 传入字符串时 就是改变fn的属性名为context 的函数上下文对象为 fn
 	proxy: function( fn, context ) {
+		//tmp        当context为字符串时 作为中间量交换值
+		//args       如果传入的参数大于两个，那么多余的将作为参数传入fn
+		//proxy      返回的代理对象
 		var tmp, args, proxy;
 
 		if ( typeof context === "string" ) {
@@ -586,6 +592,7 @@ jQuery.extend( {
 // unguarded in another place, it seems safer to just disable JSHint for these
 // three lines.
 /* jshint ignore: start */
+	//es6 新数据类型Symbol
 if ( typeof Symbol === "function" ) {
 	jQuery.fn[ Symbol.iterator ] = arr[ Symbol.iterator ];
 }
@@ -2897,6 +2904,7 @@ jQuery.fn.extend( {
 
 
 // A central reference to the root jQuery(document)
+	//一般指$(document)
 var rootjQuery,
 
 	// A simple way to check for HTML strings
@@ -2908,15 +2916,18 @@ var rootjQuery,
 		var match, elem;
 
 		// HANDLE: $(""), $(null), $(undefined), $(false)
+		// $(""), $(null), $(undefined), $(false) 这种情况直接return this;
 		if ( !selector ) {
 			return this;
 		}
 
 		// Method init() accepts an alternate rootjQuery
 		// so migrate can support jQuery.sub (gh-2101)
+		//根节点可以传入
 		root = root || rootjQuery;
 
 		// Handle HTML strings
+		//传入的对象是一个字符串
 		if ( typeof selector === "string" ) {
 			if ( selector[ 0 ] === "<" &&
 				selector[ selector.length - 1 ] === ">" &&
