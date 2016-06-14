@@ -2910,6 +2910,7 @@ var rootjQuery,
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
 	// Strict HTML recognition (#11290: must start with <)
+	//这个正则是用来判断 id 和标签  例如 #id 和 <a>dsdf</a>
 	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,
 
 	init = jQuery.fn.init = function( selector, context, root ) {
@@ -2927,8 +2928,9 @@ var rootjQuery,
 		root = root || rootjQuery;
 
 		// Handle HTML strings
-		//传入的对象是一个字符串
+		//传入的对象是一个字符串时
 		if ( typeof selector === "string" ) {
+			//当为字符串为html标签时此判断生效。 例如：<div>aaa<a>zz</a></div>
 			if ( selector[ 0 ] === "<" &&
 				selector[ selector.length - 1 ] === ">" &&
 				selector.length >= 3 ) {
@@ -2937,18 +2939,22 @@ var rootjQuery,
 				match = [ null, selector, null ];
 
 			} else {
+				//还有一种selector 是html b标签的情况会走这里 例如 <div>aaa<a>zz</a></div>dsfsdf
 				match = rquickExpr.exec( selector );
 			}
 
 			// Match html or make sure no context is specified for #id
+			//match[1] 这个位置放的就是<div>aaa<a>zz</a></div>格式的字符串
 			if ( match && ( match[ 1 ] || !context ) ) {
 
 				// HANDLE: $(html) -> $(array)
+				// 如果selecter 是HTML 字符串
 				if ( match[ 1 ] ) {
 					context = context instanceof jQuery ? context[ 0 ] : context;
 
 					// Option to run scripts is true for back-compat
 					// Intentionally let the error be thrown if parseHTML is not present
+					//把字符串变成dom并且与jquery 对象合并成类数组
 					jQuery.merge( this, jQuery.parseHTML(
 						match[ 1 ],
 						context && context.nodeType ? context.ownerDocument || context : document,
